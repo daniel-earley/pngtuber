@@ -1,3 +1,4 @@
+import math
 import pygame as pg
 from pygame.locals import *
 
@@ -19,13 +20,46 @@ class Avatar:
         self.bodyWidth = 0
         self.bodyHeight = 0
 
+        # Anchor Point
+        self.anchorX = 0
+        self.anchorY = 0
+
     def drawFace(self, x, y):
+        # Apply transformation
         img = pg.transform.scale(self.faceImg, (self.faceWidth, self.faceHeight))
+        # Draw on screen
         self.window.blit(img, (x + self.faceXOffset, y + self.faceYOffset))
 
     def drawBody(self, x, y):
+        # Set Offsets
+        xOff, yOff = x + self.bodyXOffset, y + self.bodyYOffset
+        
+        # Calculate angle of rotation
+        angle = self.calcAngle(xOff, yOff)
+
+        # Apply transformations
         img = pg.transform.scale(self.bodyImg, (self.bodyWidth, self.bodyHeight))
-        self.window.blit(img, (x + self.bodyXOffset, y + self.bodyYOffset))
+        rotatedImg = pg.transform.rotate(img, angle)
+
+        # Draw on screen
+        self.window.blit(rotatedImg, (xOff, yOff))           
+
+    def calcAngle(self, x, y):
+        # Construct Imaginary Triangle
+        adj = (x + (self.bodyWidth // 2)) - self.anchorX 
+        opp = y - self.anchorY
+        hyp = math.sqrt(adj**2 + opp**2)
+
+        # Calculate angle
+        theta = math.asin(opp/hyp)
+        angle = math.degrees(theta)
+
+        # Add 90 degrees
+        if adj >= 0:
+            return (angle + 90) * -1
+        else:
+            return angle + 90
+
 
     # Face Setters
     def setAllFace(self, xOff, yOff, width, height):
@@ -64,6 +98,17 @@ class Avatar:
     
     def setBodyHeight(self, height):
         self.faceHeight = height
+
+    # Anchor Setters
+    def setAnchor(self, x, y):
+        self.anchorX = x
+        self.anchorY = y
+
+    def setAnchorX(self, x):
+        self.anchorX = x
+    
+    def setAnchorY(self, y):
+        self.anchorX = y
 
 
     
