@@ -26,8 +26,8 @@ bodyImg = pg.image.load("./resources/body.png")
 
 # Initialize Avatar
 avatar = Avatar(screen, faceImg, bodyImg)
-avatar.setAllFace(W//2, 0, 300, 300)
 avatar.setAllBody(W//2, 80, 320, 320)
+avatar.setAllFace(170, -40, 300, 300)
 avatar.setAnchor(W//2, H)
 
 # Some storage
@@ -49,12 +49,12 @@ while True:
         detection = True
         faceX, faceY = -x, y
         avatar.drawBody(faceX, faceY)
-        avatar.drawFace(faceX, faceY)
+        # avatar.drawFace(faceX, faceY)
     
     # Draw avatar's last position on loss of detection
     if not detection:
         avatar.drawBody(faceX, faceY)
-        avatar.drawFace(faceX, faceY)
+        # avatar.drawFace(faceX, faceY)
 
     # Visual representation of the anchor point
     pg.draw.circle(screen, (0,255,0), (avatar.anchorX, avatar.anchorY), 10)
