@@ -24,33 +24,29 @@ class Avatar:
         self.anchorX = 0
         self.anchorY = 0
 
-    def drawFace(self, surface, x, y):
-        # Apply transformation
-        img = pg.transform.scale(self.faceImg, (self.faceWidth, self.faceHeight))
-        # Draw on screen
-        surface.blit(img, (x - self.faceXOffset, self.faceYOffset + y))
-
-    def drawBody(self, x, y):
+    def draw(self, x, y):
         # Set Offsets
         xOff, yOff = x + self.bodyXOffset, y + self.bodyYOffset
-        faceYOff = 0
+
         # Calculate angle of rotation
         angle = self.calcAngle(xOff, yOff)
-        # print(f"Angle = {angle}")
-
-        if abs(angle) >= 25:
-            modifier = abs(angle) - 25
-            faceYOff = modifier * 2
-            print(f"abs(angle) = {abs(angle)}, modifier = {modifier}, faceYOff = {faceYOff}")
-
+        
         # Apply transformations
-        img = pg.transform.scale(self.bodyImg, (self.bodyWidth, self.bodyHeight))
-        rotatedImg = pg.transform.rotate(img, angle)
+        bodyImg = pg.transform.scale(self.bodyImg, (self.bodyWidth, self.bodyHeight))
+        faceImg = pg.transform.scale(self.faceImg, (self.faceWidth, self.faceHeight))
+        rotatedImg = pg.transform.rotate(bodyImg, angle)
+
+        # Blit face onto rotated image
+        bW, bH = bodyImg.get_size()
+        fW, fH = faceImg.get_size()
+        rW, rH = rotatedImg.get_size()
+        rotatedImg.blit(faceImg, (bW//2 - fW//2, rH//2 - fH//2 - self.faceYOffset))
+
+        rect = rotatedImg.get_rect()
+        rect.center = (self.anchorX, self.anchorY)
 
         # Draw on screen
-        # rotatedImg.blit(faceImg, (self.faceXOffset + x, -40))
-        self.drawFace(rotatedImg, rotatedImg.get_width()//2, faceYOff)
-        self.window.blit(rotatedImg, (xOff, yOff))           
+        self.window.blit(rotatedImg, (xOff, yOff))        
 
     def calcAngle(self, x, y):
         # Construct Imaginary Triangle
