@@ -2,7 +2,6 @@ import pygame as pg
 import sys
 import cv2
 from pygame.locals import *
-from torch import det
 from avatar import Avatar
 
 # Inits
@@ -20,9 +19,9 @@ screen = pg.display.set_mode((W, H))
 webcam = cv2.VideoCapture(0)
 
 # Load images
-backgroundImg = pg.image.load("./resources/background.jpeg")
-faceImg = pg.image.load("./resources/face.png")
-bodyImg = pg.image.load("./resources/body.png")
+backgroundImg = pg.image.load("./resources/background.jpeg").convert()
+faceImg = pg.image.load("./resources/face.png").convert_alpha()
+bodyImg = pg.image.load("./resources/body.png").convert_alpha()
 
 # Initialize Avatar
 avatar = Avatar(screen, faceImg, bodyImg)
@@ -46,7 +45,7 @@ while True:
     screen.blit(backgroundImg, (0,0))
 
     # Draw Avatar
-    clock.tick(120)
+    clock.tick(30)
     for (x,y,w,h) in faces:
         detection = True
         faceX, faceY = -x, y
